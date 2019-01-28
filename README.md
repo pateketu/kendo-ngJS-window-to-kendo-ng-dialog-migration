@@ -17,3 +17,33 @@ This PoC is the result of some investigation and pocking around Kendo's code bas
 2. Kendo Dialog already provides an easy way to customize everything from Header to Action buttons and thats what the PoC follows
 3. Again any custom params can be be injected into the Component loaded into the Dialog, again this is done via the custom injector
 4. Got a clue for this one from Kendo's Notification source code, idea is create a component with necessary marke up of `<ng-template kendoDialogContainer></ng-template>` (src/app/popup/dialog-container.component.ts) and load it Dynamically and append it to the `<body>` tag before calling the `open` method on Kendo's `DialogService`, This has to be done just once as we only a single container. see `ensureKendoDialogContainer` method in src/app/popup/popup-window.service.ts
+
+#### Usage of PopupWindowService
+```javascript
+async alert() {
+      await this.popupWindowService.alert('Yo yo', 'What you doin');
+      // Do any other things that needs to be done afte user has closed alert 
+}
+```
+
+```javascript
+async confirm() {
+      const confirm = await this.popupWindowService.confirm('Are you sure?', 'You sure you wannna do this?', 'Yeppp!');
+      // Do any other things that needs to be done afte user interacted with confirm dialogh, output will be either true or false
+      
+ }
+```
+
+```javascript
+async custom() {
+    const result = await this.popupWindowService.openModal({title: 'Custom',
+                            content: SettingsComponent,
+                            doneButtonText: 'OK',
+                            showCancelButton: true,
+                            cancelButtonText: 'Close',
+                            resolve: {customParam: {'val': `from the caller of Dialog`}}});
+
+   console.log(`Result from Dynamic component in Dialog: ${JSON.stringify(result)}`);
+  }
+
+```
